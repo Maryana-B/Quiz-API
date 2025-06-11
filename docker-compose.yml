@@ -8,7 +8,22 @@
 
 services:
   db:
-    env_file: ".env"
+    env:
+    - name: POSTGRES_USER
+      valueFrom:
+        secretKeyRef:
+          name: quiz-api-secret
+          key: POSTGRES_USER
+    - name: POSTGRES_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: quiz-api-secret
+          key: POSTGRES_PASSWORD
+    - name: POSTGRES_HOST_AUTH_METHOD
+      valueFrom:
+        secretKeyRef:
+          name: quiz-api-secret
+          key: POSTGRES_HOST_AUTH_METHOD
     container_name: pg_container
     image: postgres:latest
     restart: always
@@ -20,7 +35,17 @@ services:
     - postgres-data:/var/lib/postgresql/data/:rw
 
   pgadmin:
-    env_file: ".env"
+    env:
+      - name: PGADMIN_DEFAULT_EMAIL
+        valueFrom:
+          secretKeyRef:
+            name: quiz-api-secret
+            key: PGADMIN_DEFAULT_EMAIL
+      - name: PGADMIN_DEFAULT_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: quiz-api-secret
+            key: PGADMIN_DEFAULT_PASSWORD
     container_name: pgadmin4_container
     image: dpage/pgadmin4:latest
     restart: always
