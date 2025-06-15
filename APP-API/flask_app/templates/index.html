@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mathe Quiz 🧮✨</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f8ff; }
+    .frage { margin-bottom: 15px; }
+    .antwort { color: green; font-weight: bold; }
+    .beschreibung { font-style: italic; color: #555; }
+  </style>
+</head>
+<body>
+  <h1>Mathe Quiz 📚➕➖</h1>
+  {% for frage, antwort, beschreibung in quiz %}
+  <div class="frage">
+    <p>❓ {{ frage }}</p>
+    <p class="antwort">✅ Antwort: {{ antwort }}</p>
+    <p class="beschreibung">ℹ️ {{ beschreibung }}</p>
+  </div>
+  {% endfor %}
+</body>
+</html>
