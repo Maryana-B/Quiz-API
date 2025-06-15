@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  flask_app:
+    build: ./flask_app
+    container_name: flask_quiz
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_web
+    ports:
+      - "9999:80"
+    volumes:
+      - ./nginx_conf:/etc/nginx/conf.d
+    depends_on:
+      - flask_app
+
+  db:
+    image: postgres:14.5-alpine
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    restart: unless-stopped
+    depends_on:
+      - db
+
+volumes:
+  db_data:
+  pgadmin_data:

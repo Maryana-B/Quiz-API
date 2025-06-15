@@ -1,0 +1,167 @@
+/* Gesamt Styling */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+  color: #333;
+  padding: 30px 40px;
+  margin: 0;
+}
+
+/* Navigation */
+nav {
+  background-color: #ffffffcc;
+  padding: 15px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  margin-bottom: 25px;
+  font-weight: 600;
+}
+
+nav a {
+  margin-right: 20px;
+  text-decoration: none;
+  color: #2c3e50;
+  transition: color 0.3s ease;
+  font-size: 1.1rem;
+}
+
+nav a:hover {
+  color: #e67e22;
+  text-shadow: 0 0 5px #e67e22;
+}
+
+/* Überschriften */
+h1, h2, h3 {
+  font-family: 'Poppins', sans-serif;
+  color: #34495e;
+  text-shadow: 1px 1px 3px #dfe6e9;
+}
+
+/* Fragekarte */
+#question_card {
+  background: white;
+  max-width: 700px;
+  margin-bottom: 25px;
+  padding: 25px 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(102, 153, 255, 0.2);
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: #2d3436;
+  user-select: none;
+}
+
+/* Frage Text */
+#frage {
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #0984e3;
+  letter-spacing: 0.04em;
+}
+
+/* Antwort Buttons */
+#options button {
+  background: linear-gradient(45deg, #6c5ce7, #0984e3);
+  border: none;
+  border-radius: 12px;
+  padding: 14px 20px;
+  margin: 10px 0;
+  color: white;
+  font-size: 1.1rem;
+  width: 100%;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+#options button:hover:not(:disabled) {
+  background: linear-gradient(45deg, #00cec9, #6c5ce7);
+  transform: scale(1.05);
+}
+
+#options button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Nächste Frage Button */
+#next_btn {
+  background-color: #00b894;
+  border: none;
+  padding: 15px 25px;
+  font-size: 1.15rem;
+  border-radius: 14px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 20px #00b894aa;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+  display: block;
+}
+
+#next_btn:disabled {
+  background-color: #b2bec3;
+  cursor: not-allowed;
+}
+
+#next_btn:hover:not(:disabled) {
+  background-color: #019875;
+}
+
+/* Ergebnis Bereich */
+#result {
+  max-width: 600px;
+  background: #dff9fb;
+  padding: 30px;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(0, 184, 148, 0.25);
+  text-align: center;
+  color: #0984e3;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+/* Formulare & Inputs */
+form {
+  max-width: 650px;
+  background: white;
+  padding: 30px 35px;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+}
+
+input[type="text"], input[type="email"] {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 10px 0 18px 0;
+  border-radius: 12px;
+  border: 1.8px solid #b2bec3;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus, input[type="email"]:focus {
+  outline: none;
+  border-color: #6c5ce7;
+  box-shadow: 0 0 8px #6c5ce7aa;
+}
+
+/* Buttons im Formular */
+form button[type="submit"], form button[type="button"] {
+  background: #6c5ce7;
+  color: white;
+  font-weight: 600;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  box-shadow: 0 6px 18px rgba(108, 92, 231, 0.5);
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+form button[type="submit"]:hover, form button[type="button"]:hover {
+  background: #341f97;
+}
