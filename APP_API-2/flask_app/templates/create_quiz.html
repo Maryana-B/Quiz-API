@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Quiz{% endblock %}
+
+{% block content %}
+  <h2>Erstelle dein eigenes Mathe Quiz! 🧮</h2>
+  <form method="post">
+    <label for="quiz_name">Name deines Quiz:</label><br/>
+    <input type="text" id="quiz_name" name="quiz_name" required /><br/><br/>
+
+    <div id="questions_container">
+      <div class="question_block">
+        <label>Frage:</label><br/>
+        <input type="text" name="question" required /><br/>
+        <label>Antwort:</label><br/>
+        <input type="text" name="answer" required /><br/>
+        <label>Beschreibung:</label><br/>
+        <input type="text" name="explanation" /><br/><br/>
+      </div>
+    </div>
+    <button type="button" onclick="addQuestion()">➕ Weitere Frage hinzufügen</button><br/><br/>
+    <button type="submit">Quiz erstellen 🚀</button>
+  </form>
+
+  <script>
+    function addQuestion() {
+      const container = document.getElementById('questions_container');
+      const newQ = document.createElement('div');
+      newQ.className = 'question_block';
+      newQ.innerHTML = `
+        <label>Frage:</label><br/>
+        <input type="text" name="question" required /><br/>
+        <label>Antwort:</label><br/>
+        <input type="text" name="answer" required /><br/>
+        <label>Beschreibung:</label><br/>
+        <input type="text" name="explanation" /><br/><br/>
+      `;
+      container.appendChild(newQ);
+    }
+  </script>
+{% endblock %}
