@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Quiz-Bibliothek{% endblock %}
+
+{% block content %}
+  <h2>📚 Bibliothek aller Quizze</h2>
+  {% for quiz in quizzes %}
+    <div class="quiz-card">
+      <p>{{ quiz }}</p>
+      <button onclick="window.location.href='{{ url_for('play_quiz', quizname=quiz) }}'">🎮 Spielen</button>
+    </div>
+  {% else %}
+    <p>Es sind noch keine Quizze verfügbar! 😢</p>
+  {% endfor %}
+{% endblock %}

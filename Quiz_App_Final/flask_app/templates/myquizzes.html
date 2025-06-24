@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Meine Quizze{% endblock %}
+
+{% block content %}
+  <h2>🧠 Deine eigenen Quizze</h2>
+  {% for quiz in quizzes %}
+    <div class="quiz-card">
+      <p>{{ quiz }}</p>
+      <button onclick="window.location.href='{{ url_for('play_quiz', quizname=quiz) }}'">▶️ Spielen</button>
+    </div>
+  {% else %}
+    <p>Du hast noch keine Quizze erstellt. 😺</p>
+  {% endfor %}
+{% endblock %}

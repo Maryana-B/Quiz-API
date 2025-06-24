@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Quiz erstellen{% endblock %}
+
+{% block content %}
+<h2>🛠️ Erstelle ein neues Quiz</h2>
+<form method="post">
+  <label for="quiz_name">Quizname:</label>
+  <input type="text" name="quiz_name" required>
+
+  <div id="questions-container">
+    <div class="quiz-card">
+      <label>Frage:</label>
+      <input type="text" name="question" required>
+
+      <label>Antwort 1:</label>
+      <input type="text" name="answer" required>
+
+      <label>Antwort 2:</label>
+      <input type="text" name="answer2" required>
+
+      <label>Erklärung:</label>
+      <input type="text" name="explanation">
+    </div>
+  </div>
+
+  <button type="button" onclick="addQuestion()">➕ Frage hinzufügen</button>
+  <br><br>
+  <input type="submit" value="Speichern ✅">
+</form>
+
+<script>
+  function addQuestion() {
+    const container = document.getElementById('questions-container');
+    const div = document.createElement('div');
+    div.className = 'quiz-card';
+    div.innerHTML = `
+      <label>Frage:</label>
+      <input type="text" name="question" required>
+
+      <label>Antwort 1:</label>
+      <input type="text" name="answer" required>
+
+      <label>Antwort 2:</label>
+      <input type="text" name="answer2" required>
+
+      <label>Erklärung:</label>
+      <input type="text" name="explanation">
+    `;
+    container.appendChild(div);
+  }
+</script>
+{% endblock %}

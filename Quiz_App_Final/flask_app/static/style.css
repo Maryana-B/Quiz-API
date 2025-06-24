@@ -1,0 +1,200 @@
+/* Base Styles */
+body {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #ff7f50;
+  padding: 20px;
+  text-align: center;
+  color: white;
+  font-size: 2em;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  background-color: #ffa07a;
+  padding: 10px;
+}
+
+nav a {
+  margin: 0 15px;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+nav a:hover {
+  color: #333;
+  background: white;
+  padding: 5px 10px;
+  border-radius: 10px;
+}
+
+main {
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Form Elements */
+button, input[type="submit"] {
+  background-color: #ff7f50;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+  font-size: 1em;
+  transition: all 0.2s ease;
+}
+
+button:hover, input[type="submit"]:hover {
+  background-color: #ff5722;
+}
+
+label {
+  font-weight: bold;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* Quiz Card Base */
+.quiz-card {
+  background-color: #fffaf0;
+  border-left: 8px solid #ffa07a;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 10px;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Quiz-specific Styles */
+.quiz-question-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  border: none !important;
+  padding: 20px 30px !important;
+  border-radius: 12px !important;
+  font-size: 18px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  text-align: left !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+  width: 100% !important;
+  margin: 10px 0 !important;
+}
+
+.quiz-question-button:hover:not(:disabled) {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2) !important;
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4c93 100%) !important;
+}
+
+.quiz-question-button:active:not(:disabled) {
+  transform: scale(0.95) !important;
+}
+
+.quiz-question-button:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.6 !important;
+}
+
+/* Progress Bar */
+.progress-container {
+  background: #e9ecef;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, #28a745, #20c997);
+  height: 8px;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+/* Results Styling */
+.results-main {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 50px;
+  border-radius: 25px;
+  text-align: center;
+  margin: 40px 0;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+}
+
+.score-display {
+  font-size: 4em;
+  margin: 40px 0;
+  text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+}
+
+.score-stats {
+  font-size: 1.4em;
+  margin: 25px 0;
+}
+
+.score-stat-item {
+  display: inline-block;
+  margin: 0 30px;
+  padding: 10px 20px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 10px;
+}
+
+.performance-message {
+  font-size: 1.3em;
+  margin: 30px 0;
+  padding: 20px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+}
+
+/* Quiz Container Transitions */
+#quiz-container {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#results-container {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* General Button Hover Effects */
+button {
+  transition: all 0.2s ease !important;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2) !important;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.95) !important;
+}

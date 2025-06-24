@@ -1,0 +1,323 @@
+{% extends 'base.html' %}
+{% block title %}Quiz: {{ quizname }}{% endblock %}
+{% block content %}
+  <h2>🎮 Quiz: {{ quizname }}</h2>
+  
+  <!-- Fortschrittsbalken -->
+  <div style="background: #e9ecef; border-radius: 10px; margin-bottom: 20px; overflow: hidden;">
+    <div id="progress-bar" style="background: linear-gradient(90deg, #28a745, #20c997); height: 8px; width: 0%; transition: width 0.3s ease;"></div>
+  </div>
+  
+  <!-- Fortschritt -->
+  <div style="text-align: center; background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+    <div><strong>📝 Frage: <span id="current-question">1</span> / {{ questions|length }}</strong></div>
+  </div>
+
+  <!-- Quiz-Container - zeigt immer nur eine Frage -->
+  <div id="quiz-container">
+    {% for question in questions %}
+      <div class="quiz-card" id="question-{{ loop.index0 }}" style="display: {% if loop.index0 == 0 %}block{% else %}none{% endif %};">
+        <div style="background: white; padding: 40px; border-radius: 20px; box-shadow: 0 6px 12px rgba(0,0,0,0.15); text-align: center; min-height: 350px; display: flex; flex-direction: column; justify-content: center;">
+          <h3 style="color: #495057; margin-bottom: 35px; font-size: 1.4em; line-height: 1.4;">{{ question.frage }}</h3>
+          
+          <div style="display: flex; flex-direction: column; gap: 20px; max-width: 600px; margin: 0 auto;">
+            {% for option_key, option_value in question.options %}
+              <button 
+                data-value="{{ option_key }}" 
+                onclick="selectAnswer(this, '{{ question.correct }}', {{ loop.index0 }})"
+                style="
+                  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                  color: white; 
+                  border: none; 
+                  padding: 20px 30px; 
+                  border-radius: 12px; 
+                  font-size: 18px; 
+                  cursor: pointer; 
+                  transition: all 0.2s ease;
+                  text-align: left;
+                  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                "
+                onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.2)'"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.1)'"
+              >
+                <strong>{{ option_key }}:</strong> {{ option_value }}
+              </button>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Ergebnis-Container (anfangs versteckt) -->
+  <div id="results-container" style="display:none;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 50px; border-radius: 25px; text-align: center; margin: 40px 0; box-shadow: 0 10px 20px rgba(0,0,0,0.25);">
+      <h2 style="margin-bottom: 25px; font-size: 2.5em;">🎯 Quiz Abgeschlossen!</h2>
+      <div style="font-size: 4em; margin: 40px 0; text-shadow: 3px 3px 6px rgba(0,0,0,0.4);">
+        <span id="final-score">0</span> / {{ questions|length }}
+      </div>
+      <div style="font-size: 1.4em; margin: 25px 0;">
+        <div style="display: inline-block; margin: 0 30px; padding: 10px 20px; background: rgba(255,255,255,0.2); border-radius: 10px;">✅ Richtig: <span id="correct-count">0</span></div>
+        <div style="display: inline-block; margin: 0 30px; padding: 10px 20px; background: rgba(255,255,255,0.2); border-radius: 10px;">❌ Falsch: <span id="wrong-count">0</span></div>
+      </div>
+      <div id="performance-message" style="font-size: 1.3em; margin: 30px 0; padding: 20px; background: rgba(255,255,255,0.25); border-radius: 15px; backdrop-filter: blur(10px);"></div>
+    </div>
+
+    <!-- Detaillierte Antworten -->
+    <div style="margin-top: 40px;">
+      <h3 style="text-align: center; color: #495057; margin-bottom: 30px; font-size: 1.8em;">📋 Alle Fragen und Antworten</h3>
+      <div id="detailed-results"></div>
+    </div>
+  </div>
+
+  <script src="/static/confetti.js"></script>
+  <script>
+    let totalQuestions = {{ questions|length }};
+    let currentScore = 0;
+    let currentQuestionIndex = 0;
+    let userAnswers = [];
+    let questions = {{ questions|tojson }};
+
+    function selectAnswer(btn, correctAnswer, questionIndex) {
+      const isCorrect = btn.dataset.value === correctAnswer;
+      
+      // Alle Buttons in dieser Frage sofort deaktivieren
+      const allButtons = document.querySelectorAll(`#question-${questionIndex} button`);
+      allButtons.forEach(button => {
+        button.disabled = true;
+        button.style.cursor = 'not-allowed';
+        button.style.opacity = '0.6';
+      });
+
+      // Kurzer visueller Feedback nur für den geklickten Button
+      btn.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        btn.style.transform = 'scale(1)';
+      }, 100);
+
+      // Antwort speichern
+      userAnswers[questionIndex] = {
+        question: questions[questionIndex].frage,
+        userAnswer: btn.textContent.trim(),
+        correct: isCorrect,
+        explanation: questions[questionIndex].beschreibung,
+        correctAnswer: correctAnswer,
+        allOptions: questions[questionIndex].options
+      };
+
+      if (isCorrect) {
+        currentScore++;
+      }
+
+      // Fortschritt aktualisieren
+      updateProgressBar();
+
+      // SOFORT zur nächsten Frage oder Ergebnisse (nur 150ms für smooth transition)
+      setTimeout(() => {
+        if (currentQuestionIndex < totalQuestions - 1) {
+          nextQuestion();
+        } else {
+          showResults();
+        }
+      }, 150);
+    }
+
+    function nextQuestion() {
+      // Aktuelle Frage mit Fade-Effekt verstecken
+      const currentQ = document.getElementById(`question-${currentQuestionIndex}`);
+      currentQ.style.opacity = '0';
+      currentQ.style.transform = 'translateX(-20px)';
+      
+      setTimeout(() => {
+        currentQ.style.display = 'none';
+        
+        // Zur nächsten Frage
+        currentQuestionIndex++;
+        const nextQ = document.getElementById(`question-${currentQuestionIndex}`);
+        
+        // Nächste Frage mit Slide-in Effekt anzeigen
+        nextQ.style.display = 'block';
+        nextQ.style.opacity = '0';
+        nextQ.style.transform = 'translateX(20px)';
+        
+        setTimeout(() => {
+          nextQ.style.opacity = '1';
+          nextQ.style.transform = 'translateX(0)';
+        }, 50);
+        
+        // Fragennummer aktualisieren
+        document.getElementById('current-question').textContent = currentQuestionIndex + 1;
+      }, 200);
+    }
+
+    function updateProgressBar() {
+      const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+      document.getElementById('progress-bar').style.width = progress + '%';
+    }
+
+    function showResults() {
+      // Quiz mit Fade-out verstecken
+      const quizContainer = document.getElementById('quiz-container');
+      quizContainer.style.opacity = '0';
+      quizContainer.style.transform = 'translateY(-20px)';
+      
+      setTimeout(() => {
+        quizContainer.style.display = 'none';
+        
+        // Ergebnisse anzeigen
+        const resultsContainer = document.getElementById('results-container');
+        resultsContainer.style.display = 'block';
+        resultsContainer.style.opacity = '0';
+        resultsContainer.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+          resultsContainer.style.opacity = '1';
+          resultsContainer.style.transform = 'translateY(0)';
+        }, 100);
+        
+        document.getElementById('final-score').textContent = currentScore;
+        document.getElementById('correct-count').textContent = currentScore;
+        document.getElementById('wrong-count').textContent = totalQuestions - currentScore;
+
+        // Performance-Nachricht
+        let percentage = (currentScore / totalQuestions) * 100;
+        let message = "";
+        if (percentage === 100) {
+          message = "🏆 ABSOLUT PERFEKT! Du bist ein LEGENDE! 🌟✨";
+        } else if (percentage >= 80) {
+          message = "🔥 KRASS GUT! Du hast richtig Ahnung! 👑";
+        } else if (percentage >= 60) {
+          message = "💪 SOLIDE LEISTUNG! Richtig gut gemacht! 🎯";
+        } else if (percentage >= 40) {
+          message = "😊 GUTER START! Weiter so, du schaffst das! 🚀";
+        } else {
+          message = "💡 ERSTMAL REINSCHNUPPERN! Übung macht den Meister! 📚";
+        }
+        document.getElementById('performance-message').innerHTML = message;
+
+        // Detaillierte Ergebnisse mit ALLEN Infos
+        let detailsHtml = "";
+        userAnswers.forEach((answer, index) => {
+          const icon = answer.correct ? "✅" : "❌";
+          const bgColor = answer.correct ? "#d4edda" : "#f8d7da";
+          const borderColor = answer.correct ? "#28a745" : "#dc3545";
+          
+          // Alle Optionen anzeigen mit Markierung
+          let optionsHtml = "";
+          answer.allOptions.forEach(([key, value]) => {
+            let optionStyle = "padding: 8px 12px; margin: 5px 0; border-radius: 6px; ";
+            if (key === answer.correctAnswer) {
+              optionStyle += "background: #d4edda; border-left: 4px solid #28a745; font-weight: bold;";
+              optionsHtml += `<div style="${optionStyle}">✅ ${key}: ${value} <span style="color: #28a745;">(RICHTIG)</span></div>`;
+            } else if (answer.userAnswer.includes(`${key}:`)) {
+              optionStyle += "background: #f8d7da; border-left: 4px solid #dc3545; font-weight: bold;";
+              optionsHtml += `<div style="${optionStyle}">❌ ${key}: ${value} <span style="color: #dc3545;">(DEINE WAHL)</span></div>`;
+            } else {
+              optionStyle += "background: #f8f9fa; border-left: 4px solid #6c757d;";
+              optionsHtml += `<div style="${optionStyle}">${key}: ${value}</div>`;
+            }
+          });
+          
+          detailsHtml += `
+            <div style="background: ${bgColor}; padding: 25px; margin: 20px 0; border-radius: 15px; border-left: 6px solid ${borderColor}; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+              <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                <span style="font-size: 2em; margin-right: 15px;">${icon}</span>
+                <strong style="color: #495057; font-size: 1.2em;">Frage ${index + 1}: ${answer.question}</strong>
+              </div>
+              
+              <div style="margin: 15px 0; padding-left: 50px;">
+                <h4 style="margin-bottom: 10px; color: #495057;">Antwortmöglichkeiten:</h4>
+                ${optionsHtml}
+              </div>
+              
+              <div style="margin: 15px 0; padding: 15px; background: rgba(0,0,0,0.05); border-radius: 10px; margin-left: 50px;">
+                <strong style="color: #17a2b8;">💡 Erklärung:</strong><br>
+                <span style="font-size: 1.1em; line-height: 1.4;">${answer.explanation}</span>
+              </div>
+            </div>
+          `;
+        });
+        document.getElementById('detailed-results').innerHTML = detailsHtml;
+
+        // MEGA KONFETTI bei gutem Ergebnis! 🎊
+        if (percentage >= 70) {
+          setTimeout(() => {
+            if (typeof confetti === 'function') {
+              // Erste Explosion
+              confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 }
+              });
+              
+              // Zweite Explosion von links
+              setTimeout(() => {
+                confetti({
+                  particleCount: 100,
+                  spread: 60,
+                  origin: { x: 0.2, y: 0.7 }
+                });
+              }, 300);
+              
+              // Dritte Explosion von rechts
+              setTimeout(() => {
+                confetti({
+                  particleCount: 100,
+                  spread: 60,
+                  origin: { x: 0.8, y: 0.7 }
+                });
+              }, 600);
+              
+              // Bei perfektem Score noch mehr Konfetti!
+              if (percentage === 100) {
+                setTimeout(() => {
+                  confetti({
+                    particleCount: 200,
+                    spread: 90,
+                    origin: { y: 0.5 }
+                  });
+                }, 1000);
+              }
+            }
+          }, 1000);
+        }
+
+        // Nach oben scrollen
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 300);
+    }
+
+    // Initiale Einstellungen
+    updateProgressBar();
+    
+    // Smooth Transitions für alle Quiz-Karten
+    document.querySelectorAll('.quiz-card').forEach(card => {
+      card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+    });
+    
+    document.getElementById('quiz-container').style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+    document.getElementById('results-container').style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+  </script>
+
+  <style>
+    .quiz-card {
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    button {
+      transition: all 0.2s ease !important;
+    }
+    
+    button:hover:not(:disabled) {
+      transform: translateY(-3px) !important;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2) !important;
+    }
+    
+    button:active:not(:disabled) {
+      transform: scale(0.95) !important;
+    }
+  </style>
+{% endblock %}

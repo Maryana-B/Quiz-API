@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>{% block title %}Quiz App{% endblock %}</title>
+</head>
+<body>
+  <header>
+    <h1>📘 Quiz App</h1>
+    <nav>
+      <a href="{{ url_for('home') }}">🏠 Home</a> |
+      <a href="{{ url_for('create') }}">🛠️ Quiz erstellen</a> |
+      <a href="{{ url_for('library') }}">📚 Bibliothek</a> |
+      <a href="{{ url_for('myquizzes') }}">🧠 Meine Quizze</a>
+    </nav>
+  </header>
+  <hr>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
